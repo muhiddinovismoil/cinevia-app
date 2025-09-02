@@ -10,6 +10,7 @@ import {
     SignIn,
 } from "@/pages";
 import { OTP } from "./pages/auth/otp/page";
+import { Guard } from "@/guards";
 
 function App() {
     return (
@@ -20,11 +21,39 @@ function App() {
                     <Route path="/movies" element={<Movies />} />
                     <Route path="/series" element={<Series />} />
                     <Route path="/cartoons" element={<Cartoons />} />
-                    <Route path="/profile" element={<Profile />} />
+                    <Route
+                        path="/profile"
+                        element={
+                            <Guard requireAuth redirectTo="/signin">
+                                <Profile />
+                            </Guard>
+                        }
+                    />
                 </Route>
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/verification" element={<OTP />} />
+                <Route
+                    path="/signup"
+                    element={
+                        <Guard requireAuth={false}>
+                            <SignUp />
+                        </Guard>
+                    }
+                />
+                <Route
+                    path="/signin"
+                    element={
+                        <Guard requireAuth={false}>
+                            <SignIn />
+                        </Guard>
+                    }
+                />
+                <Route
+                    path="/verification"
+                    element={
+                        <Guard requireAuth={false}>
+                            <OTP />
+                        </Guard>
+                    }
+                />
             </Routes>
         </>
     );

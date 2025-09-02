@@ -13,8 +13,11 @@ export const useResendOtp = () => {
             toast.success("New otp sended to your mail");
         },
         onError: (err: any) => {
-                       toast.error(err?.data?.response?.message || "Something went wrong");
-
+            const message =
+                err?.response?.data?.message ||
+                err?.message ||
+                "Failed to resend otp.";
+            toast.error(message);
         },
     });
 };

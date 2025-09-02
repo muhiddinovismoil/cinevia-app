@@ -9,8 +9,7 @@ import {
     UserMenu,
 } from "./components";
 import type { HeaderProps, NavItem } from "./types";
-import { useDebouncedValue } from "@/hook";
-import { getAccessToken } from "@/config";
+import { useAuthListener, useDebouncedValue } from "@/hook";
 
 const NAV_ITEMS: NavItem[] = [
     { to: "/movies", label: "Movies", icon: Film },
@@ -23,15 +22,10 @@ export const Header = ({ data, isLoading }: HeaderProps) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const searchRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        const { accessToken } = getAccessToken();
-        setIsLoggedIn(!!accessToken);
-    }, []);
+    const { isLoggedIn, setIsLoggedIn } = useAuthListener();
 
     const { register, handleSubmit, watch, reset } = useForm<{
         searchQuery: string;
@@ -114,10 +108,10 @@ export const Header = ({ data, isLoading }: HeaderProps) => {
                         <UserMenu
                             data={data}
                             isLoading={isLoading}
-                            setIsLoggedIn={setIsLoggedIn}
                             isLoggedIn={isLoggedIn}
                             dropdownOpen={dropdownOpen}
                             setDropdownOpen={setDropdownOpen}
+                            setIsLoggedIn={setIsLoggedIn}
                             dropdownRef={dropdownRef}
                         />
 

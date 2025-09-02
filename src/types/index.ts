@@ -3,3 +3,10 @@ export interface BaseResponseI<T> {
     message: string;
     data: T;
 }
+
+export interface UploadData {
+    filename: string;
+    mimetype: string;
+    size: number;
+    path: string;
+}

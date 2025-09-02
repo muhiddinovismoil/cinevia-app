@@ -13,7 +13,11 @@ export const useOtpVerify = () => {
             toast.success("OTP verified successfully");
         },
         onError: (err: any) => {
-            toast.error(err?.data?.response?.message || "Something went wrong");
+            const message =
+                err?.response?.data?.message ||
+                err?.message ||
+                "Failed to verify otp.";
+            toast.error(message);
         },
     });
 };

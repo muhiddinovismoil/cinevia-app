@@ -1,9 +1,10 @@
 import type React from "react";
 import type { UserMenuProps } from "../types";
 import { Bookmark, ChevronDown, LogOut, Settings, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { removeCookieState } from "@/config";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const UserMenu: React.FC<UserMenuProps> = ({
     data,
@@ -14,6 +15,8 @@ export const UserMenu: React.FC<UserMenuProps> = ({
     dropdownRef,
     setIsLoggedIn,
 }) => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
     return (
         <div className="hidden sm:block">
             {isLoggedIn ? (
@@ -96,6 +99,10 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                                         setDropdownOpen(false);
                                         removeCookieState("token");
                                         setIsLoggedIn(false);
+                                        queryClient.removeQueries({
+                                            queryKey: ["user", "profile"],
+                                        });
+                                        navigate("/");
                                         toast.success(
                                             "Successfully signed out"
                                         );

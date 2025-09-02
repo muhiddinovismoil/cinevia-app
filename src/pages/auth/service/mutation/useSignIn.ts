@@ -13,7 +13,11 @@ export const useSignIn = () => {
             toast.success("Successfully signed in");
         },
         onError: (err: any) => {
-            toast.error(err?.data?.response?.message || "Something went wrong");
+            const message =
+                err?.response?.data?.message ||
+                err?.message ||
+                "Failed to sign in.";
+            toast.error(message);
         },
     });
 };

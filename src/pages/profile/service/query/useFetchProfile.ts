@@ -1,13 +1,20 @@
-import { requestWithToken } from "@/config";
+import { getAccessToken, request } from "@/config";
 import { useQuery } from "@tanstack/react-query";
 import type { UserProfileDataI } from "../../types";
 
 export const useFetchProfile = () => {
+    const { accessToken } = getAccessToken();
+
     return useQuery({
-        queryKey: ["user", "profile"],
+        queryKey: ["user", "profile", accessToken],
         queryFn: async (): Promise<UserProfileDataI> => {
-            const response = await requestWithToken("/user/me");
+            const response = await request("/user/me", {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
             return response.data;
         },
+        enabled: !!accessToken,
+        staleTime: 0,
+        gcTime: 0,
     });
 };
