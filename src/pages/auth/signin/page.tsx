@@ -4,11 +4,15 @@ import { Logo } from "../components";
 import { useSignIn } from "../service/mutation";
 import type { SignInPayloadI, SignInResponseI } from "../types";
 import { saveCookieState } from "@/config";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export const SignIn = () => {
     const navigate = useNavigate();
     const { mutate, isPending } = useSignIn();
     const { register, handleSubmit, reset } = useForm<SignInPayloadI>();
+    const [showPassword, setShowPassword] = useState(false);
+
     const onSubmit = (data: SignInPayloadI) => {
         mutate(data, {
             onSuccess: async (response) => {
@@ -61,14 +65,27 @@ export const SignIn = () => {
                         >
                             Password
                         </label>
-                        <input
-                            autoComplete="off"
-                            id="password"
-                            type="password"
-                            {...register("password", { required: true })}
-                            placeholder="Enter your password ..."
-                            className="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                        />
+                        <div className="relative">
+                            <input
+                                autoComplete="off"
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                {...register("password", { required: true })}
+                                placeholder="Enter your password ..."
+                                className="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none pr-10"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-white"
+                            >
+                                {showPassword ? (
+                                    <EyeOff className="w-5 h-5" />
+                                ) : (
+                                    <Eye className="w-5 h-5" />
+                                )}
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex items-center justify-between text-sm">
