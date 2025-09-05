@@ -8,8 +8,9 @@ import {
     Cartoons,
     SignUp,
     SignIn,
+    OTP,
+    MovieDetail,
 } from "@/pages";
-import { OTP } from "./pages/auth/otp/page";
 import { Guard } from "@/guards";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/" element={<MainLayout />}>
                     <Route index element={<Home />} />
                     <Route path="/movies" element={<Movies />} />
+                    <Route path="/movies/:id" element={<MovieDetail />} />
                     <Route path="/series" element={<Series />} />
                     <Route path="/cartoons" element={<Cartoons />} />
                     <Route
