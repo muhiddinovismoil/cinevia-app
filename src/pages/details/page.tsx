@@ -1,22 +1,45 @@
 import { useRef } from "react";
-import { MoviePlayer } from "@/pages/movies/components";
-import { BlockLoader } from "@/pages/home/components";
-import { Clock, Film, Globe, User, Users, Eye, Star } from "lucide-react";
+import { MoviePlayer } from "@/pages/details/components";
+import { BlockLoader, ContentsSlider } from "@/pages/home/components";
+import {
+    Clock,
+    Film,
+    Globe,
+    User,
+    Users,
+    Eye,
+    Star,
+    LucideArrowRight,
+} from "lucide-react";
 import { useParams } from "react-router-dom";
 import type { Movie } from "../home/types";
-import { useFetchMediaById } from "./service/query";
+import { useFetchMediaById, useFetchRecommendeds } from "./service/query";
+import Cookies from "js-cookie";
 
 export const MovieDetail = () => {
     const params = useParams();
     const playerRef = useRef<HTMLDivElement | null>(null);
-    const { data, isLoading } = useFetchMediaById({ id: params.id as string });
-    const movie: Movie = data?.data;
+    const { data: movieData, isLoading: isMoiveFetching } = useFetchMediaById({
+        id: params.id as string,
+    });
+    const movie: Movie = movieData?.data;
+
+    const { data: recommendedData, isLoading: isRecommendedsFetching } =
+        useFetchRecommendeds({
+            categoryId: movie?.categoryId,
+            imdbRating: movie?.imdbRating,
+            movieType: movie?.type,
+            movieId: params.id as string,
+        });
+    const recommendeds = recommendedData?.data;
+
+    const token = Cookies.get("token");
 
     const handleWatchNow = () => {
         playerRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    if (isLoading) {
+    if (isMoiveFetching || isRecommendedsFetching) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-black text-white">
                 <BlockLoader />
@@ -34,8 +57,8 @@ export const MovieDetail = () => {
 
     return (
         <div className="container">
-            <div className="flex flex-col gap-[50px] py-[100px] text-white">
-                <div className="flex flex-col md:flex-row gap-[40px]">
+            <div className="flex flex-col gap-[50px] py-[100px] text-white lg:gap-[100px]">
+                <div className="flex flex-col md:flex-row gap-[40px] lg:pb-[50px]">
                     <div className="flex flex-col items-center md:items-start">
                         <div className="w-[200px] md:w-[285px] border-2 border-white rounded-xl overflow-hidden">
                             <img
@@ -46,9 +69,14 @@ export const MovieDetail = () => {
                         </div>
                         <button
                             onClick={handleWatchNow}
-                            className="mt-4 px-4 py-2 cursor-pointer bg-gray-800 text-white rounded-lg hover:bg-gray-700"
+                            disabled={!token}
+                            className={`mt-4 px-4 py-2 cursor-pointer rounded-lg ${
+                                token
+                                    ? "bg-gray-800 text-white hover:bg-gray-700"
+                                    : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                            }`}
                         >
-                            Watch Now
+                            {token ? "Watch Now" : "Login to Watch"}
                         </button>
                     </div>
 
@@ -98,19 +126,41 @@ export const MovieDetail = () => {
                     </div>
                 </div>
 
-                <div ref={playerRef} className="pt-[100px]">
-                    <MoviePlayer
-                        src={movie.source as string}
-                        poster={movie.thumbnail}
-                        imdbRating={movie.imdbRating}
-                    />
+                <div ref={playerRef} className="pt-[100px] lg:pb-[60px]">
+                    {token ? (
+                        <MoviePlayer
+                            src={movie.source as string}
+                            poster={movie.thumbnail}
+                            imdbRating={movie.imdbRating}
+                        />
+                    ) : (
+                        <div className="flex flex-col justify-center items-center w-full h-[700px] bg-gray-900 rounded-xl">
+                            <p className="text-gray-400 mb-4">
+                                You must be logged in to watch this movie
+                            </p>
+                            <button
+                                onClick={() =>
+                                    (window.location.href = "/signin")
+                                }
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500"
+                            >
+                                Go to Login
+                            </button>
+                        </div>
+                    )}
                 </div>
 
-                <div>
-                    <h2 className="text-xl font-semibold mb-4">
+                <div className="flex flex-col gap-[25px] sm:gap-[35px] lg:gap-[50px] lg:pt-[50px]">
+                    <button className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer">
                         Recommended movies
-                    </h2>
-                    <p className="text-gray-400">Coming soon...</p>
+                        <LucideArrowRight size={24} />
+                    </button>
+                    <div>
+                        <ContentsSlider
+                            items={recommendeds}
+                            slidesPerView={5}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

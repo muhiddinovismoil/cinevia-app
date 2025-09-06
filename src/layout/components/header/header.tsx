@@ -41,7 +41,6 @@ export const Header = ({ data, isLoading }: HeaderProps) => {
 
     const onSearchSubmit = handleSubmit((data) => {
         if (data.searchQuery.trim()) {
-            console.log("Search submitted:", data.searchQuery);
             setSearchOpen(false);
             reset();
         }

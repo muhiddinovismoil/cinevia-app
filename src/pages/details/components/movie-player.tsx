@@ -12,7 +12,7 @@ import {
     Star,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { MoviePlayerProps } from "../types";
+import type { MoviePlayerProps } from "../../movies/types";
 
 export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
