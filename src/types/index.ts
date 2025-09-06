@@ -10,3 +10,14 @@ export interface UploadData {
     size: number;
     path: string;
 }
+
+export enum MovieTypes {
+    MOVIE = "MOVIE",
+    SERIES = "SERIES",
+    CARTOON = "CARTOON",
+}
+
+export enum UploadTypes {
+    LOCAL = "LOCAL",
+    EXTERNAL = "EXTERNAL",
+}
