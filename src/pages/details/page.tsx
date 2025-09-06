@@ -1,36 +1,36 @@
 import { useRef } from "react";
-import { MoviePlayer } from "../components";
+import { MoviePlayer } from "@/pages/movies/components";
+import { BlockLoader } from "@/pages/home/components";
 import { Clock, Film, Globe, User, Users, Eye, Star } from "lucide-react";
+import { useParams } from "react-router-dom";
+import type { Movie } from "../home/types";
+import { useFetchMediaById } from "./service/query";
 
 export const MovieDetail = () => {
+    const params = useParams();
     const playerRef = useRef<HTMLDivElement | null>(null);
-    
-
-    const movie = {
-        id: "1",
-        title: "Interstellar",
-        description:
-            "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-        slug: "interstellar",
-        thumbnail:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSngBJ0B7UDrLUkDlp6DCQLsEYuWR-DiHwbnxFFCniB3HiP3f3NZmR1-lKSC34ge6YXu4LX",
-        type: "Movie",
-        uploadType: "Url",
-        source: "https://xstreamx.films365.org/movie/c1ce1a2c-79b3-40b7-a9bb-5670cb0deae7/Interstellar",
-        duration: 169,
-        releaseYear: 2014,
-        country: "USA",
-        director: "Christopher Nolan",
-        cast: "Matthew McConaughey, Anne Hathaway, Jessica Chastain",
-        imdbRating: 8.6,
-        viewCount: 129384,
-        averageRating: 9.2,
-        category: "Sci-Fi",
-    };
+    const { data, isLoading } = useFetchMediaById({ id: params.id as string });
+    const movie: Movie = data?.data;
 
     const handleWatchNow = () => {
         playerRef.current?.scrollIntoView({ behavior: "smooth" });
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen bg-black text-white">
+                <BlockLoader />
+            </div>
+        );
+    }
+
+    if (!movie) {
+        return (
+            <div className="flex justify-center items-center min-h-screen text-white">
+                <p>Movie not found</p>
+            </div>
+        );
+    }
 
     return (
         <div className="container">
@@ -66,7 +66,7 @@ export const MovieDetail = () => {
                             </div>
                             <div className="flex items-center gap-2">
                                 <Film size={16} /> {movie.releaseYear} •{" "}
-                                {movie.category}
+                                {movie.category?.title}
                             </div>
                             <div className="flex items-center gap-2">
                                 <Globe size={16} /> {movie.country}
@@ -79,7 +79,8 @@ export const MovieDetail = () => {
                             </div>
                             <div className="flex items-center gap-2">
                                 <Eye size={16} />{" "}
-                                {movie.viewCount.toLocaleString()} views
+                                {(movie.viewCount as number).toLocaleString()}{" "}
+                                views
                             </div>
                             <div className="flex items-center gap-2 text-yellow-400">
                                 <img
@@ -99,7 +100,7 @@ export const MovieDetail = () => {
 
                 <div ref={playerRef} className="pt-[100px]">
                     <MoviePlayer
-                        src={movie.source}
+                        src={movie.source as string}
                         poster={movie.thumbnail}
                         imdbRating={movie.imdbRating}
                     />

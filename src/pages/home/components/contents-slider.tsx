@@ -1,8 +1,9 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import type { ContentsSliderProps } from "../types";
-import { MovieCard } from "./movie-card";
+import { Mousewheel } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
+import { MovieCard } from "./movie-card";
+import type { ContentsSliderProps } from "../types";
+import "swiper/css";
 
 export const ContentsSlider: React.FC<ContentsSliderProps> = ({
     items,
@@ -13,8 +14,10 @@ export const ContentsSlider: React.FC<ContentsSliderProps> = ({
     return (
         <div>
             <Swiper
-                className="cursor-grab"
+                className="cursor-pointer"
                 spaceBetween={spaceBetween}
+                modules={[Mousewheel]}
+                mousewheel={{ forceToAxis: true }}
                 slidesPerView={slidesPerView}
                 breakpoints={{
                     320: { slidesPerView: 1.5 },
