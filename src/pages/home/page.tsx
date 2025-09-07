@@ -6,8 +6,10 @@ import {
     BlockLoader,
 } from "./components";
 import { useFetchMainMovieTvSeriesCartoons } from "./service/query";
+import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
+    const navigate = useNavigate();
     const { data, isLoading } = useFetchMainMovieTvSeriesCartoons();
     return (
         <section className="pt-[50px] pb-[140px] flex flex-col gap-[80px] md:gap-[150px]">
@@ -51,7 +53,7 @@ export const Home = () => {
 
             <div className="container px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col gap-[15px] sm:gap-[25px] lg:gap-[40px]">
-                    <button className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer">
+                    <button className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer" onClick={() => navigate('/cartoons')}>
                         Cartoons for kids
                         <LucideArrowRight size={24} />
                     </button>

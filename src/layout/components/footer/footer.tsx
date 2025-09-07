@@ -98,7 +98,9 @@ const Logo: React.FC = () => (
                         src="/logo.png"
                         alt="Cinevia"
                         className="w-full h-full object-cover"
-                        onError={(e) => {
+                        onError={(
+                            e: React.SyntheticEvent<HTMLImageElement, Event>
+                        ) => {
                             const target = e.target as HTMLImageElement;
                             target.style.display = "none";
                             const fallback = target.nextSibling as HTMLElement;
