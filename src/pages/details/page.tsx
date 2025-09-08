@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { MoviePlayer } from "@/pages/details/components";
+import { useRef, useState } from "react";
+import { MoviePlayer, TrailerPlayer } from "@/pages/details/components";
 import { BlockLoader, ContentsSlider } from "@/pages/home/components";
 import {
     Clock,
@@ -15,10 +15,15 @@ import { useParams } from "react-router-dom";
 import type { Movie } from "../home/types";
 import { useFetchMediaById, useFetchRecommendeds } from "./service/query";
 import Cookies from "js-cookie";
+import { SeasonsBlock } from "./components/season-block";
+import { MovieTypes } from "@/types";
+import type { Episode } from "./types";
 
 export const MovieDetail = () => {
     const params = useParams();
     const playerRef = useRef<HTMLDivElement | null>(null);
+    const [activeEpisode, setActiveEpisode] = useState<Episode | null>(null);
+
     const { data: movieData, isLoading: isMoiveFetching } = useFetchMediaById({
         id: params.id as string,
     });
@@ -127,12 +132,41 @@ export const MovieDetail = () => {
                 </div>
 
                 <div ref={playerRef} className="pt-[100px] lg:pb-[60px]">
+                    {(movie.type === MovieTypes.SERIES ||
+                        movie.type === MovieTypes.CARTOON_SERIES) &&
+                        movie?.seasons?.length > 0 && (
+                            <div className="py-[60px] flex flex-col gap-[20px] sm:gap-[30px] lg:gap-[45px]">
+                                <h2 className="text-2xl md:text-3xl">
+                                    Seasons
+                                </h2>
+                                <SeasonsBlock
+                                    onEpisodeSelect={(ep) =>
+                                        setActiveEpisode(ep)
+                                    }
+                                    seasons={movie.seasons}
+                                />
+                            </div>
+                        )}
                     {token ? (
-                        <MoviePlayer
-                            src={movie.source as string}
-                            poster={movie.thumbnail}
-                            imdbRating={movie.imdbRating}
-                        />
+                        <>
+                            {activeEpisode ? (
+                                <MoviePlayer
+                                    src={activeEpisode.source}
+                                    poster={activeEpisode.thumbnail}
+                                    imdbRating={movie.imdbRating}
+                                />
+                            ) : movie.source?.startsWith(
+                                  "https://www.youtube.com"
+                              ) ? (
+                                <TrailerPlayer url={movie.source} />
+                            ) : (
+                                <MoviePlayer
+                                    src={movie.source as string}
+                                    poster={movie.thumbnail}
+                                    imdbRating={movie.imdbRating}
+                                />
+                            )}
+                        </>
                     ) : (
                         <div className="flex flex-col justify-center items-center w-full h-[700px] bg-gray-900 rounded-xl">
                             <p className="text-gray-400 mb-4">

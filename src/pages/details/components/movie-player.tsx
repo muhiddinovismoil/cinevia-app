@@ -9,7 +9,6 @@ import {
     Settings,
     FastForward,
     Rewind,
-    Star,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { MoviePlayerProps } from "../../movies/types";
@@ -19,7 +18,6 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     const [isPlaying, setIsPlaying] = useState(false);
-    const [showOverlayPlay, setShowOverlayPlay] = useState(true);
     const [volume, setVolume] = useState(1);
     const [playbackRate, setPlaybackRate] = useState(1);
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -28,20 +26,23 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
         "forward" | "backward" | null
     >(null);
     const [showRateOverlay, setShowRateOverlay] = useState(false);
+    const [showVolumeOverlay, setShowVolumeOverlay] = useState(false);
+
+    const [overlayIcon, setOverlayIcon] = useState<"play" | "pause" | null>(
+        null
+    );
 
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [showVolumeOverlay, setShowVolumeOverlay] = useState(false);
-
     const [showControls, setShowControls] = useState(true);
 
-    // keyboard controls
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (!videoRef.current) return;
 
             switch (e.key) {
                 case " ":
+                case "k":
                     e.preventDefault();
                     togglePlay();
                     break;
@@ -68,30 +69,47 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                 case "f":
                     toggleFullscreen();
                     break;
-                default:
-                    break;
             }
         };
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isPlaying]);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        const handlePlay = () => setIsPlaying(true);
+        const handlePause = () => setIsPlaying(false);
+        const handleTimeUpdate = () => setCurrentTime(video.currentTime);
+        const handleLoadedMeta = () => setDuration(video.duration);
+
+        video.addEventListener("play", handlePlay);
+        video.addEventListener("pause", handlePause);
+        video.addEventListener("timeupdate", handleTimeUpdate);
+        video.addEventListener("loadedmetadata", handleLoadedMeta);
+
+        return () => {
+            video.removeEventListener("play", handlePlay);
+            video.removeEventListener("pause", handlePause);
+            video.removeEventListener("timeupdate", handleTimeUpdate);
+            video.removeEventListener("loadedmetadata", handleLoadedMeta);
+        };
     }, []);
 
-    // fullscreen listener
     useEffect(() => {
         const handleFullscreenChange = () => {
             setIsFullscreen(!!document.fullscreenElement);
         };
         document.addEventListener("fullscreenchange", handleFullscreenChange);
-        return () => {
+        return () =>
             document.removeEventListener(
                 "fullscreenchange",
                 handleFullscreenChange
             );
-        };
     }, []);
 
-    // auto-hide controls in fullscreen
     useEffect(() => {
         if (!isFullscreen) {
             setShowControls(true);
@@ -121,7 +139,6 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
         };
     }, [isFullscreen]);
 
-    // volume & speed update
     useEffect(() => {
         if (videoRef.current) {
             videoRef.current.volume = volume;
@@ -129,24 +146,6 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
         }
     }, [volume, playbackRate]);
 
-    // listen video events
-    useEffect(() => {
-        const video = videoRef.current;
-        if (!video) return;
-
-        const timeUpdate = () => setCurrentTime(video.currentTime);
-        const loadedMeta = () => setDuration(video.duration);
-
-        video.addEventListener("timeupdate", timeUpdate);
-        video.addEventListener("loadedmetadata", loadedMeta);
-
-        return () => {
-            video.removeEventListener("timeupdate", timeUpdate);
-            video.removeEventListener("loadedmetadata", loadedMeta);
-        };
-    }, []);
-
-    // TAP left/right skip
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
@@ -178,22 +177,19 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
         if (!videoRef.current) return;
         if (isPlaying) {
             videoRef.current.pause();
+            setOverlayIcon("pause");
         } else {
             videoRef.current.play();
+            setOverlayIcon("play");
         }
-        setIsPlaying(!isPlaying);
-        setShowOverlayPlay(false);
+
+        setTimeout(() => setOverlayIcon(null), 600);
     };
 
     const toggleMute = () => {
         if (!videoRef.current) return;
-        if (videoRef.current.muted) {
-            videoRef.current.muted = false;
-            setVolume(videoRef.current.volume || 1);
-        } else {
-            videoRef.current.muted = true;
-            setVolume(0);
-        }
+        videoRef.current.muted = !videoRef.current.muted;
+        setVolume(videoRef.current.muted ? 0 : videoRef.current.volume || 1);
         triggerVolumeOverlay();
     };
 
@@ -256,20 +252,33 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                 onClick={togglePlay}
             />
 
-            {/* Overlay Play */}
-            {showOverlayPlay && poster && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md">
-                    <motion.button
-                        onClick={togglePlay}
-                        whileHover={{ scale: 1.1 }}
-                        className="w-20 h-20 flex cursor-pointer items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-full shadow-lg transition"
+            <AnimatePresence>
+                {overlayIcon === "play" && (
+                    <motion.div
+                        key="overlay-play"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute inset-0 flex items-center justify-center text-white pointer-events-none"
                     >
-                        <Play size={36} className="ml-1" />
-                    </motion.button>
-                </div>
-            )}
+                        <Play size={70} className="text-white ml-2" />
+                    </motion.div>
+                )}
+                {overlayIcon === "pause" && (
+                    <motion.div
+                        key="overlay-pause"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute inset-0 flex items-center justify-center text-white pointer-events-none"
+                    >
+                        <Pause size={70} className="text-white" />
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            {/* Skip Animations */}
             <AnimatePresence>
                 {skipDirection === "forward" && (
                     <motion.div
@@ -277,6 +286,7 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 50 }}
+                        transition={{ duration: 0.3 }}
                         className="absolute inset-0 flex items-center justify-center text-white text-3xl"
                     >
                         <FastForward size={60} /> +10s
@@ -288,6 +298,7 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -50 }}
+                        transition={{ duration: 0.3 }}
                         className="absolute inset-0 flex items-center justify-center text-white text-3xl"
                     >
                         <Rewind size={60} /> -10s
@@ -295,13 +306,14 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                 )}
             </AnimatePresence>
 
-            {/* Volume Overlay */}
             <AnimatePresence>
                 {showVolumeOverlay && (
                     <motion.div
+                        key="volume"
                         initial={{ opacity: 0, y: -30 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -30 }}
+                        transition={{ duration: 0.3 }}
                         className="absolute top-6 right-6 bg-black/70 px-4 py-2 rounded-xl text-white text-sm flex flex-col items-center"
                     >
                         <div className="w-20 h-2 bg-gray-600 rounded">
@@ -315,13 +327,14 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                 )}
             </AnimatePresence>
 
-            {/* Rate Overlay */}
             <AnimatePresence>
                 {showRateOverlay && (
                     <motion.div
+                        key="rate"
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.5 }}
+                        transition={{ duration: 0.3 }}
                         className="absolute top-6 left-1/2 -translate-x-1/2 bg-black/70 px-4 py-2 rounded-xl text-white text-sm"
                     >
                         Speed: {playbackRate}x
@@ -329,15 +342,13 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                 )}
             </AnimatePresence>
 
-            {/* IMDB Badge */}
             {imdbRating && (
                 <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/70 px-3 py-1 rounded-lg text-yellow-400 text-sm">
-                    <Star size={16} className="text-yellow-400" />
+                    <img src="/imdb.png" alt="imdb" width={30} height={30} />
                     <span>{imdbRating.toFixed(1)}</span>
                 </div>
             )}
 
-            {/* Controls */}
             <AnimatePresence>
                 {showControls && (
                     <motion.div
@@ -346,7 +357,6 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                         exit={{ opacity: 0, y: 20 }}
                         className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col gap-2"
                     >
-                        {/* Seek bar */}
                         <input
                             type="range"
                             min="0"
@@ -358,13 +368,11 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                             className="w-full accent-green-500 cursor-pointer"
                         />
 
-                        {/* Time */}
                         <div className="flex items-center justify-between text-xs text-gray-300">
                             <span>{formatTime(currentTime)}</span>
                             <span>{formatTime(duration)}</span>
                         </div>
 
-                        {/* Buttons */}
                         <div className="flex items-center justify-between flex-wrap gap-3">
                             <div className="flex items-center gap-3">
                                 <button

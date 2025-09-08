@@ -15,6 +15,7 @@ export enum MovieTypes {
     MOVIE = "MOVIE",
     SERIES = "SERIES",
     CARTOON = "CARTOON",
+    CARTOON_SERIES = "CARTOON_SERIES",
 }
 
 export enum UploadTypes {

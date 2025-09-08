@@ -1,3 +1,4 @@
+import type { Season } from "@/pages/details/types";
 import type { MovieTypes, UploadTypes } from "@/types";
 
 export type Movie = {
@@ -40,6 +41,8 @@ export type Movie = {
     updatedAt?: Date;
 
     category?: CategoryI;
+
+    seasons: Season[];
 };
 
 export interface CategoryI {
