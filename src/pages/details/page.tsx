@@ -15,8 +15,9 @@ import { useParams } from "react-router-dom";
 import type { Movie } from "../home/types";
 import { useFetchMediaById, useFetchRecommendeds } from "./service/query";
 import Cookies from "js-cookie";
-import { SeasonsBlock } from "./components/season-block";
-import { MovieTypes } from "@/types";
+import { SeasonsBlock } from "./components";
+import { getStreamSrc } from "@/service";
+import { MovieTypes, UploadTypes } from "@/types";
 import type { Episode } from "./types";
 
 export const MovieDetail = () => {
@@ -151,7 +152,10 @@ export const MovieDetail = () => {
                         <>
                             {activeEpisode ? (
                                 <MoviePlayer
-                                    src={activeEpisode.source}
+                                    src={getStreamSrc(
+                                        activeEpisode?.source || movie?.source,
+                                        movie?.uploadType as UploadTypes
+                                    )}
                                     poster={activeEpisode.thumbnail}
                                     imdbRating={movie.imdbRating}
                                 />
