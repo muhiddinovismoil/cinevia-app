@@ -22,3 +22,18 @@ export enum UploadTypes {
     LOCAL = "LOCAL",
     EXTERNAL = "EXTERNAL",
 }
+export enum SortEnum {
+    DATE_ASC = "DATE_ASC",
+    DATE_DESC = "DATE_DESC",
+    TITLE_ASC = "TITLE_ASC",
+    TITLE_DESC = "TITLE_DESC",
+}
+
+export interface MovieFetchProps {
+    pageNumber: number;
+    pageSize: number;
+    search?: string;
+    categoryId?: string;
+    movieType: MovieTypes;
+    sort?: SortEnum;
+}

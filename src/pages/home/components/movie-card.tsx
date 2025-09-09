@@ -1,9 +1,23 @@
 import { Star } from "lucide-react";
 import type { Movie } from "../types";
+import { useNavigate } from "react-router-dom";
 
-export const MovieCard: React.FC<{ movie: Movie }> = ({ movie }) => {
+export const MovieCard = ({
+    movie,
+    isNavigatable,
+}: {
+    movie: Movie;
+    isNavigatable?: boolean;
+}) => {
+    const navigate = useNavigate();
+    const navigateTo = isNavigatable
+        ? () => navigate(`/details/${movie.id}`)
+        : undefined;
     return (
-        <div className="relative group overflow-hidden rounded-xl shadow-lg cursor-pointer">
+        <div
+            onClick={navigateTo}
+            className="relative group overflow-hidden rounded-xl shadow-lg cursor-pointer"
+        >
             <img
                 src={movie.thumbnail}
                 alt={movie.title}
