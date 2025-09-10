@@ -18,7 +18,10 @@ export const Home = () => {
             <div className="container px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col gap-[40px] sm:gap-[50px] lg:gap-[120px]">
                     <div className="flex flex-col gap-[15px] sm:gap-[25px] lg:gap-[40px]">
-                        <button className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer">
+                        <button
+                            onClick={() => navigate("/movies")}
+                            className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer"
+                        >
                             Top movies
                             <LucideArrowRight size={24} />
                         </button>
@@ -33,7 +36,10 @@ export const Home = () => {
                     </div>
 
                     <div className="flex flex-col gap-[15px] sm:gap-[25px] lg:gap-[40px]">
-                        <button className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer">
+                        <button
+                            onClick={() => navigate("/series")}
+                            className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer"
+                        >
                             TV-Series to watch with family
                             <LucideArrowRight size={24} />
                         </button>
@@ -53,7 +59,10 @@ export const Home = () => {
 
             <div className="container px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col gap-[15px] sm:gap-[25px] lg:gap-[40px]">
-                    <button className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer" onClick={() => navigate('/cartoons')}>
+                    <button
+                        className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer"
+                        onClick={() => navigate("/cartoons")}
+                    >
                         Cartoons for kids
                         <LucideArrowRight size={24} />
                     </button>

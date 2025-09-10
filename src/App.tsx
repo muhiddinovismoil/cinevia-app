@@ -31,6 +31,7 @@ function App() {
                             </Guard>
                         }
                     />
+                    <Route path="/search?"></Route>
                 </Route>
                 <Route
                     path="/signup"

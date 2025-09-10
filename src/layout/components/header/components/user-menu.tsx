@@ -1,6 +1,12 @@
 import type React from "react";
 import type { UserMenuProps } from "../types";
-import { Bookmark, ChevronDown, LogOut, User } from "lucide-react";
+import {
+    Bookmark,
+    ChevronDown,
+    HourglassIcon,
+    LogOut,
+    User,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { removeCookieState } from "@/config";
 import toast from "react-hot-toast";
@@ -77,12 +83,20 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                                     <span>My Profile</span>
                                 </Link>
                                 <Link
-                                    to="/watchlist"
+                                    to="/favourites"
                                     className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-200"
                                     onClick={() => setDropdownOpen(false)}
                                 >
                                     <Bookmark className="h-4 w-4" />
-                                    <span>My Watchlist</span>
+                                    <span>Favourites</span>
+                                </Link>
+                                <Link
+                                    to="/watchhistories"
+                                    className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-200"
+                                    onClick={() => setDropdownOpen(false)}
+                                >
+                                    <HourglassIcon className="h-4 w-4" />
+                                    <span>Watch History</span>
                                 </Link>
                                 <div className="border-t border-gray-800/50 my-2" />
                                 <button
