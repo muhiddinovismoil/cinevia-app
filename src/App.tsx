@@ -10,6 +10,7 @@ import {
     SignIn,
     OTP,
     MovieDetail,
+    NotFound,
 } from "@/pages";
 import { Guard } from "@/guards";
 
@@ -57,6 +58,7 @@ function App() {
                         </Guard>
                     }
                 />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </>
     );
