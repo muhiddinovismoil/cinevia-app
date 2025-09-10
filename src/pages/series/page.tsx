@@ -24,7 +24,7 @@ export const Series = () => {
 
     return (
         <div className="container">
-            <div className="pt-[100px] grid grid-cols-1 min-[470px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="pt-[100px] grid grid-cols-1 min-[375px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 {movies.map((movie) => (
                     <MovieCard
                         isNavigatable={true}
