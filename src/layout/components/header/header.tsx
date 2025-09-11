@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Menu, Film, Heart, Tv } from "lucide-react";
-import { useForm } from "react-hook-form";
 import {
     DesktopNavigation,
     Logo,
@@ -9,8 +8,7 @@ import {
     UserMenu,
 } from "./components";
 import type { HeaderProps, NavItem } from "./types";
-import { useAuthListener, useDebouncedValue } from "@/hook";
-import { useNavigate } from "react-router-dom";
+import { useAuthListener } from "@/hook";
 
 const NAV_ITEMS: NavItem[] = [
     { to: "/movies", label: "Movies", icon: Film },
@@ -19,39 +17,12 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const Header = ({ data, isLoading }: HeaderProps) => {
-    const [searchOpen, setSearchOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const searchRef = useRef<HTMLInputElement>(null);
     const { isLoggedIn, setIsLoggedIn } = useAuthListener();
-
-    const { register, handleSubmit, watch, reset } = useForm<{
-        searchQuery: string;
-    }>();
-    const searchValue = watch("searchQuery");
-    const navigate = useNavigate();
-    const [debouncedSearch] = useDebouncedValue(searchValue, 500);
-
-    useEffect(() => {
-        if (debouncedSearch?.trim()) {
-            navigate(`/search?q=${encodeURIComponent(debouncedSearch.trim())}`);
-        }
-    }, [debouncedSearch, navigate]);
-
-    useEffect(() => {
-        if (debouncedSearch?.trim()) {
-        }
-    }, [debouncedSearch]);
-
-    const onSearchSubmit = handleSubmit((data) => {
-        if (data.searchQuery.trim()) {
-            setSearchOpen(false);
-            reset();
-        }
-    });
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -81,10 +52,6 @@ export const Header = ({ data, isLoading }: HeaderProps) => {
         return () => window.removeEventListener("resize", handleResize);
     }, [menuOpen]);
 
-    useEffect(() => {
-        if (searchOpen && searchRef.current) searchRef.current.focus();
-    }, [searchOpen]);
-
     return (
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
@@ -103,13 +70,7 @@ export const Header = ({ data, isLoading }: HeaderProps) => {
                     <DesktopNavigation navItems={NAV_ITEMS} />
 
                     <div className="flex items-center space-x-2 sm:space-x-3">
-                        <SearchComponent
-                            searchOpen={searchOpen}
-                            setSearchOpen={setSearchOpen}
-                            searchRef={searchRef}
-                            register={register("searchQuery")}
-                            onSubmit={onSearchSubmit}
-                        />
+                        <SearchComponent />
 
                         <UserMenu
                             data={data}

@@ -5,4 +5,6 @@ export * from "./movies";
 export * from "./series";
 export * from "./profile";
 export * from "./details";
+export * from "./search";
+
 export * from "./notfound";
