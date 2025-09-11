@@ -10,6 +10,7 @@ import {
 } from "./components";
 import type { HeaderProps, NavItem } from "./types";
 import { useAuthListener, useDebouncedValue } from "@/hook";
+import { useNavigate } from "react-router-dom";
 
 const NAV_ITEMS: NavItem[] = [
     { to: "/movies", label: "Movies", icon: Film },
@@ -31,8 +32,14 @@ export const Header = ({ data, isLoading }: HeaderProps) => {
         searchQuery: string;
     }>();
     const searchValue = watch("searchQuery");
-
+    const navigate = useNavigate();
     const [debouncedSearch] = useDebouncedValue(searchValue, 500);
+
+    useEffect(() => {
+        if (debouncedSearch?.trim()) {
+            navigate(`/search?q=${encodeURIComponent(debouncedSearch.trim())}`);
+        }
+    }, [debouncedSearch, navigate]);
 
     useEffect(() => {
         if (debouncedSearch?.trim()) {

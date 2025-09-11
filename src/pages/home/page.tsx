@@ -12,7 +12,7 @@ export const Home = () => {
     const navigate = useNavigate();
     const { data, isLoading } = useFetchMainMovieTvSeriesCartoons();
     return (
-        <section className="pt-[50px] pb-[140px] flex flex-col gap-[80px] md:gap-[150px]">
+        <section className="pt-[50px] pb-[180px] flex flex-col gap-[80px] md:gap-[150px]">
             <HeroSwiper />
 
             <div className="container px-4 sm:px-6 lg:px-8">
