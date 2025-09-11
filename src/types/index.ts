@@ -30,10 +30,10 @@ export enum SortEnum {
 }
 
 export interface MovieFetchProps {
-    pageNumber: number;
-    pageSize: number;
+    pageNumber?: number;
+    pageSize?: number;
     search?: string;
     categoryId?: string;
-    movieType: MovieTypes;
+    movieType?: MovieTypes;
     sort?: SortEnum;
 }

@@ -11,7 +11,7 @@ import {
     OTP,
     MovieDetail,
     NotFound,
-    Search,
+    SearchPage,
 } from "@/pages";
 import { Guard } from "@/guards";
 
@@ -33,7 +33,7 @@ function App() {
                             </Guard>
                         }
                     />
-                    <Route element={<Search />} path="/search" />
+                    <Route element={<SearchPage />} path="/search" />
                 </Route>
                 <Route
                     path="/signup"

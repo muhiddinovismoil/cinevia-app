@@ -1,15 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import { request } from "@/config";
 import type { MovieFetchProps } from "@/types";
 
-export const useFetchMovies = ({
-    movieType,
-    pageNumber,
-    pageSize,
-    categoryId,
-    search,
-    sort,
-}: MovieFetchProps) => {
+export const useFetchMovies = (
+    {
+        movieType,
+        pageNumber,
+        pageSize,
+        categoryId,
+        search,
+        sort,
+    }: MovieFetchProps,
+    options?: UseQueryOptions<any, Error>
+) => {
     return useQuery({
         queryKey: [
             "movie-cartoon-tvseries",
@@ -33,5 +36,6 @@ export const useFetchMovies = ({
             });
             return response.data;
         },
+        ...options,
     });
 };
