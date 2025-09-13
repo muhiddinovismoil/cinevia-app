@@ -33,6 +33,22 @@ function App() {
                             </Guard>
                         }
                     />
+                    <Route
+                        path="/favourites"
+                        element={
+                            <Guard requireAuth redirectTo="/signin">
+                                <></>
+                            </Guard>
+                        }
+                    />
+                    <Route
+                        path="/watchhistories"
+                        element={
+                            <Guard requireAuth redirectTo="/signin">
+                                <></>
+                            </Guard>
+                        }
+                    />
                     <Route element={<SearchPage />} path="/search" />
                 </Route>
                 <Route
