@@ -10,6 +10,8 @@ import {
     Eye,
     Star,
     LucideArrowRight,
+    Play,
+    LogIn,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import type { Movie } from "../home/types";
@@ -76,13 +78,23 @@ export const MovieDetail = () => {
                         <button
                             onClick={handleWatchNow}
                             disabled={!token}
-                            className={`mt-4 px-4 py-2 cursor-pointer rounded-lg ${
+                            className={`mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg w-[200px] md:w-[285px] ${
                                 token
                                     ? "bg-gray-800 text-white hover:bg-gray-700"
                                     : "bg-gray-600 text-gray-400 cursor-not-allowed"
                             }`}
                         >
-                            {token ? "Watch Now" : "Login to Watch"}
+                            {token ? (
+                                <>
+                                    <Play className="w-4 h-4" />
+                                    Watch Now
+                                </>
+                            ) : (
+                                <>
+                                    <LogIn className="w-4 h-4" />
+                                    Login to Watch
+                                </>
+                            )}
                         </button>
                     </div>
 
