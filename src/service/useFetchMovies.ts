@@ -10,9 +10,11 @@ export const useFetchMovies = (
         categoryId,
         search,
         sort,
+        releaseYear,
     }: MovieFetchProps,
     options?: UseQueryOptions<any, Error>
 ) => {
+    console.log(releaseYear);
     return useQuery({
         queryKey: [
             "movie-cartoon-tvseries",
@@ -22,6 +24,7 @@ export const useFetchMovies = (
             categoryId,
             search,
             sort,
+            releaseYear,
         ],
         queryFn: async () => {
             const response = await request.get("/movie", {
@@ -32,6 +35,7 @@ export const useFetchMovies = (
                     categoryId,
                     search,
                     sort,
+                    releaseYear,
                 },
             });
             return response.data;

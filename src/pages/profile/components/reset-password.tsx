@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { Edit, X } from "lucide-react";
 import type { ResetPasswordPayload, ResetPasswordProps } from "../types";
 import { useForm } from "react-hook-form";
 import { useResetPassword } from "../service/mutation";
@@ -101,6 +101,7 @@ export const ResetPasswordModal = ({
                                 {isResettingPass
                                     ? "Updating..."
                                     : "Update Password"}
+                                <Edit />
                             </button>
                         </form>
                     </div>

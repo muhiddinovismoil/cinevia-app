@@ -33,7 +33,15 @@ export interface MovieFetchProps {
     pageNumber?: number;
     pageSize?: number;
     search?: string;
-    categoryId?: string;
+    categoryId?: string | undefined;
     movieType?: MovieTypes;
-    sort?: SortEnum;
+    sort?: SortEnum | undefined;
+    releaseYear?: number | undefined;
+}
+export interface CategoriesResponseData {
+    id: string;
+    name: string;
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
 }
