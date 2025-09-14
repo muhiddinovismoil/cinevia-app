@@ -14,7 +14,6 @@ export const useFetchMovies = (
     }: MovieFetchProps,
     options?: UseQueryOptions<any, Error>
 ) => {
-    console.log(releaseYear);
     return useQuery({
         queryKey: [
             "movie-cartoon-tvseries",

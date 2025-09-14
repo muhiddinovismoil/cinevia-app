@@ -4,7 +4,7 @@ import type { MainMoviesTvSeriesCartoonsResponseI } from "../../types";
 
 export const useFetchMainMovieTvSeriesCartoons = () => {
     return useQuery({
-        queryKey: ["tv-series", "movies", "cartoons"],
+        queryKey: ["tv-series_movies_cartoons"],
         queryFn: async () => {
             const { data }: { data: MainMoviesTvSeriesCartoonsResponseI } =
                 await request.get("/movie/main");

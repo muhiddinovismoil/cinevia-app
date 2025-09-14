@@ -42,6 +42,8 @@ export type Movie = {
 
     category?: CategoryI;
 
+    favorites: FavouriteI[];
+
     seasons: Season[];
 };
 
@@ -52,6 +54,14 @@ export interface CategoryI {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface FavouriteI {
+    id: string;
+    userId: string;
+    movieId: string;
+    createdAt: Date;
+}
+
 export type ContentsSliderProps = {
     items: Movie[];
     slidesPerView?: number;

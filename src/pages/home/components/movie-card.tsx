@@ -1,6 +1,11 @@
 import { Star } from "lucide-react";
 import type { Movie } from "../types";
 import { useNavigate } from "react-router-dom";
+import {
+    useSetMovieFavourite,
+    useRemoveFromFavourites,
+} from "../service/mutation";
+import { useState, useEffect } from "react";
 
 export const MovieCard = ({
     movie,
@@ -13,6 +18,31 @@ export const MovieCard = ({
     const navigateTo = isNavigatable
         ? () => navigate(`/details/${movie.id}`)
         : undefined;
+
+    const { mutate: setFavourite } = useSetMovieFavourite();
+    const { mutate: removeFavourite } = useRemoveFromFavourites();
+
+    // initial
+    const [isFavourite, setIsFavourite] = useState<boolean>(
+        movie?.favorites?.length > 0
+    );
+
+    // props yangilansa sync bo‘lishi uchun
+    useEffect(() => {
+        setIsFavourite(movie?.favorites?.length > 0);
+    }, [movie.favorites]);
+
+    const toggleFavourite = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (isFavourite) {
+            removeFavourite(movie.id);
+            setIsFavourite(false);
+        } else {
+            setFavourite(movie.id);
+            setIsFavourite(true);
+        }
+    };
+
     return (
         <div
             onClick={navigateTo}
@@ -24,12 +54,29 @@ export const MovieCard = ({
                 className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
+            {/* ⭐ Favourite Badge */}
+            <div
+                onClick={toggleFavourite}
+                className="absolute top-2 right-2 p-2 rounded-full 
+                   bg-black/50 backdrop-blur-md shadow-md
+                   hover:bg-black/70 transition-colors duration-200"
+            >
+                <Star
+                    className={`w-5 h-5 ${
+                        isFavourite
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-white"
+                    }`}
+                />
+            </div>
+
+            {/* Hover Info */}
             <div
                 className="absolute bottom-0 left-0 right-0 
-                      bg-black/60 backdrop-blur-md 
-                      opacity-0 group-hover:opacity-100 
-                      transition-all duration-300 
-                      p-3"
+                   bg-black/60 backdrop-blur-md 
+                   opacity-0 group-hover:opacity-100 
+                   transition-all duration-300 
+                   p-3"
             >
                 <h3 className="text-white text-lg font-semibold truncate">
                     {movie.title}
