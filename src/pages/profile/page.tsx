@@ -1,15 +1,26 @@
-import { ArrowRight, Edit, KeyRound } from "lucide-react";
+import { Edit, KeyRound, LucideArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useFetchProfile } from "./service/query";
-import type { UserProfileDataI } from "./types";
+import { useFetchProfile, useFetchHistoryForSlide } from "./service/query";
+import type { UserProfileDataI, WatchHistoryResponseI } from "./types";
 import {
     EditProfileModal,
     PreviewPhoto,
     ResetPasswordModal,
 } from "./components";
+import { useNavigate } from "react-router-dom";
+import { BlockLoader, ContentsSlider } from "../home/components";
 
 export const Profile = () => {
     const { data } = useFetchProfile();
+    const { data: watchHistoryResponse, isLoading } = useFetchHistoryForSlide({
+        pageNumber: 1,
+        pageSize: 20,
+    });
+    const watchHistory: WatchHistoryResponseI[] =
+        watchHistoryResponse?.data ?? [];
+    console.log(watchHistory.map((history) => history.movie));
+
+    const navigate = useNavigate();
 
     const [previewOpen, setPreviewOpen] = useState(false);
     const [editProfileOpen, setEditProfileOpen] = useState(false);
@@ -29,7 +40,7 @@ export const Profile = () => {
     }, [data]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white px-4 sm:px-6 lg:px-12 pt-20">
+        <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white px-4 sm:px-6 lg:px-12 pt-30">
             <div className="flex flex-col gap-12 sm:gap-20 lg:gap-28">
                 <div className="container mx-auto">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 sm:gap-10">
@@ -74,11 +85,24 @@ export const Profile = () => {
                 </div>
 
                 <div className="container mx-auto">
-                    <div className="flex items-center justify-between sm:justify-start gap-3">
-                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+                    <div className="flex flex-col gap-[15px] sm:gap-[25px] lg:gap-[40px]">
+                        <button
+                            className="text-start flex text-xl sm:text-3xl font-bold items-center gap-[8px] sm:gap-[10px] cursor-pointer"
+                            onClick={() => navigate("/watchhistories")}
+                        >
                             Watch History
-                        </h2>
-                        <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                            <LucideArrowRight size={24} />
+                        </button>
+                        {isLoading ? (
+                            <BlockLoader />
+                        ) : (
+                            <ContentsSlider
+                                items={watchHistory.map(
+                                    (history) => history.movie
+                                )}
+                                slidesPerView={5}
+                            />
+                        )}
                     </div>
                 </div>
             </div>

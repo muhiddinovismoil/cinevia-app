@@ -1,3 +1,5 @@
+import type { Movie } from "@/pages/home/types";
+
 export interface UserProfileDataI {
     id: string;
     fullname: string;
@@ -34,4 +36,26 @@ export interface EditProfileProps {
     avatarFile: File;
     data: UserProfileDataI;
     defaultAvatar: string;
+}
+
+export interface WatchHistoryResponseI {
+    id: string;
+
+    userId: string;
+
+    movieId: string;
+
+    episodeId: string;
+
+    duration: number;
+
+    progress: number;
+
+    status: string;
+
+    createdAt: Date;
+
+    updatedAt: Date;
+
+    movie: Omit<Movie, "category" | "season">;
 }

@@ -30,7 +30,7 @@ export const ContentsSlider: React.FC<ContentsSliderProps> = ({
                 {items.map((item) => (
                     <SwiperSlide
                         key={item.id}
-                        onClick={() => navigate(`details/${item.id}`)}
+                        onClick={() => navigate(`/details/${item.id}`)}
                     >
                         <MovieCard movie={item} />
                     </SwiperSlide>
