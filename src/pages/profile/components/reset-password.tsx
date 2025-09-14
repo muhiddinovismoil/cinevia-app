@@ -1,4 +1,4 @@
-import { Edit, X } from "lucide-react";
+import { X } from "lucide-react";
 import type { ResetPasswordPayload, ResetPasswordProps } from "../types";
 import { useForm } from "react-hook-form";
 import { useResetPassword } from "../service/mutation";
