@@ -12,8 +12,18 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { MoviePlayerProps } from "../../movies/types";
+import { useUpsertWatchHistory } from "../service/mutation";
+import { WatchStatus } from "../types";
 
-export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
+export const MoviePlayer = ({
+    src,
+    poster,
+    imdbRating,
+    movieId,
+    episodeId,
+}: MoviePlayerProps) => {
+    const { mutate } = useUpsertWatchHistory();
+
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -35,6 +45,50 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [showControls, setShowControls] = useState(true);
+
+    useEffect(() => {
+        if (!videoRef.current) return;
+
+        const video = videoRef.current;
+        let lastSaved = 0;
+
+        const saveHistory = (status: WatchStatus) => {
+            if (!duration) return;
+            mutate({
+                movieId,
+                episodeId: episodeId ?? undefined,
+                duration: Math.floor(duration),
+                progress: Math.floor(video.currentTime),
+                status,
+            });
+        };
+
+        const handleTimeUpdate = () => {
+            const current = Math.floor(video.currentTime);
+            if (current - lastSaved >= 35) {
+                saveHistory(WatchStatus.WATCHING);
+                lastSaved = current;
+            }
+        };
+
+        const handlePause = () => {
+            saveHistory(WatchStatus.WATCHING);
+        };
+
+        const handleEnded = () => {
+            saveHistory(WatchStatus.COMPLETED);
+        };
+
+        video.addEventListener("timeupdate", handleTimeUpdate);
+        video.addEventListener("pause", handlePause);
+        video.addEventListener("ended", handleEnded);
+
+        return () => {
+            video.removeEventListener("timeupdate", handleTimeUpdate);
+            video.removeEventListener("pause", handlePause);
+            video.removeEventListener("ended", handleEnded);
+        };
+    }, [duration, movieId, episodeId]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -233,10 +287,15 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
     };
 
     const formatTime = (time: number) => {
-        if (isNaN(time)) return "00:00";
-        const minutes = Math.floor(time / 60);
+        if (isNaN(time)) return "00:00:00";
+
+        const hours = Math.floor(time / 3600);
+        const minutes = Math.floor((time % 3600) / 60);
         const seconds = Math.floor(time % 60);
-        return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+
+        const pad = (num: number) => String(num).padStart(2, "0");
+
+        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
     };
 
     return (
@@ -365,7 +424,7 @@ export const MoviePlayer = ({ src, poster, imdbRating }: MoviePlayerProps) => {
                                 duration ? (currentTime / duration) * 100 : 0
                             }
                             onChange={handleSeek}
-                            className="w-full accent-green-500 cursor-pointer"
+                            className="w-full accent-gray-500 cursor-pointer"
                         />
 
                         <div className="flex items-center justify-between text-xs text-gray-300">

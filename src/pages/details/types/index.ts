@@ -20,3 +20,16 @@ export interface Season {
     title: string;
     episodes: Episode[];
 }
+
+export interface CreateWatchHistoryPayload {
+    movieId: string;
+    episodeId?: string | undefined;
+    duration: number;
+    progress: number;
+    status: WatchStatus;
+}
+
+export enum WatchStatus {
+    WATCHING = "WATCHING",
+    COMPLETED = "COMPLETED",
+}

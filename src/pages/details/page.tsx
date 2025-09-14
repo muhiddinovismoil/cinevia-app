@@ -168,8 +168,14 @@ export const MovieDetail = () => {
                                         activeEpisode?.source || movie?.source,
                                         movie?.uploadType as UploadTypes
                                     )}
-                                    poster={activeEpisode.thumbnail}
+                                    poster={
+                                        activeEpisode?.thumbnail ||
+                                        movie?.thumbnail
+                                    }
                                     imdbRating={movie.imdbRating}
+                                    movieId={movie.id}
+                                    episodeId={activeEpisode?.id}
+                                    movieType={movie.type as MovieTypes}
                                 />
                             ) : movie.source?.startsWith(
                                   "https://www.youtube.com"
@@ -180,6 +186,8 @@ export const MovieDetail = () => {
                                     src={movie.source as string}
                                     poster={movie.thumbnail}
                                     imdbRating={movie.imdbRating}
+                                    movieId={movie.id}
+                                    movieType={movie.type as MovieTypes}
                                 />
                             )}
                         </>
