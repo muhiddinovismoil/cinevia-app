@@ -18,7 +18,6 @@ export const Profile = () => {
     });
     const watchHistory: WatchHistoryResponseI[] =
         watchHistoryResponse?.data ?? [];
-    console.log(watchHistory.map((history) => history.movie));
 
     const navigate = useNavigate();
 

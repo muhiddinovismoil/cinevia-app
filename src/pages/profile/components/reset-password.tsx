@@ -101,7 +101,6 @@ export const ResetPasswordModal = ({
                                 {isResettingPass
                                     ? "Updating..."
                                     : "Update Password"}
-                                <Edit />
                             </button>
                         </form>
                     </div>

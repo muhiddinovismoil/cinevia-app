@@ -10,7 +10,7 @@ const slides = [
         id: 1,
         title: "Movies",
         description:
-            "Enjoy the latest blockbusters in full HD. Stream anywhere, anytime.",
+            "Enjoy the latest blockbusters in Full HD. Stream anywhere, anytime.",
         image: "/hero-images/movies.png",
         buttonText: "Watch Movies",
         navigationLink: "/movies",
