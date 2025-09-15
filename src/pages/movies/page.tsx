@@ -16,7 +16,7 @@ export const Movies = () => {
     const [releaseYear, setReleaseYear] = useState<number | null>(null);
 
     const { data, isLoading } = useFetchMovies({
-        movieType: MovieTypes.CARTOON,
+        movieType: MovieTypes.MOVIE,
         pageNumber: page,
         pageSize: 20,
         categoryId: categoryId || undefined,

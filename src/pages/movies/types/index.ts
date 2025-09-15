@@ -1,3 +1,4 @@
+import type { WatchHistoryI } from "@/pages/home/types";
 import type { MovieTypes } from "@/types";
 
 export interface MoviePlayerProps {
@@ -7,6 +8,7 @@ export interface MoviePlayerProps {
     movieId: string;
     episodeId?: string | undefined;
     movieType: MovieTypes;
+    watchHistory: WatchHistoryI[];
 }
 
 export type BottomSheetProps = {

@@ -1,4 +1,4 @@
-import type { Season } from "@/pages/details/types";
+import type { Season, WatchStatus } from "@/pages/details/types";
 import type { MovieTypes, UploadTypes } from "@/types";
 
 export type Movie = {
@@ -45,6 +45,8 @@ export type Movie = {
     favorites: FavouriteI[];
 
     seasons: Season[];
+
+    watchHistory: WatchHistoryI[];
 };
 
 export interface CategoryI {
@@ -53,6 +55,15 @@ export interface CategoryI {
     slug: string;
     createdAt: Date;
     updatedAt: Date;
+}
+export interface WatchHistoryI {
+    id: string;
+    movieId: string;
+    userId: string;
+    episodeId?: string;
+    progress: number;
+    duration: number;
+    status: WatchStatus;
 }
 
 export interface FavouriteI {

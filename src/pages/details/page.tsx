@@ -32,6 +32,8 @@ export const MovieDetail = () => {
     });
     const movie: Movie = movieData?.data;
 
+    console.log(movie);
+
     const { data: recommendedData, isLoading: isRecommendedsFetching } =
         useFetchRecommendeds({
             categoryId: movie?.categoryId,
@@ -176,6 +178,7 @@ export const MovieDetail = () => {
                                     movieId={movie.id}
                                     episodeId={activeEpisode?.id}
                                     movieType={movie.type as MovieTypes}
+                                    watchHistory={movie.watchHistory}
                                 />
                             ) : movie.source?.startsWith(
                                   "https://www.youtube.com"
@@ -188,6 +191,7 @@ export const MovieDetail = () => {
                                     imdbRating={movie.imdbRating}
                                     movieId={movie.id}
                                     movieType={movie.type as MovieTypes}
+                                    watchHistory={movie.watchHistory}
                                 />
                             )}
                         </>

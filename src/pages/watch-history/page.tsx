@@ -85,7 +85,7 @@ export const WatchHistory = () => {
                     </div>
                 ) : (
                     <div className="col-span-full flex justify-center py-10">
-                        <NotFound movieType={"Watched movies history"} />
+                        <NotFound movieType={"Watched Movies History"} />
                     </div>
                 )}
             </div>

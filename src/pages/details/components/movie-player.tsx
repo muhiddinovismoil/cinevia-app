@@ -21,8 +21,40 @@ export const MoviePlayer = ({
     imdbRating,
     movieId,
     episodeId,
+    watchHistory,
 }: MoviePlayerProps) => {
     const { mutate } = useUpsertWatchHistory();
+    const getLastProgress = () => {
+        if (!watchHistory.length) return null;
+
+        if (episodeId) {
+            const epHistory = watchHistory.find(
+                (h) => h.episodeId === episodeId
+            );
+            return epHistory && epHistory.progress < epHistory.duration
+                ? epHistory.progress
+                : null;
+        }
+
+        const movieHistory = watchHistory[0];
+        return movieHistory && movieHistory.progress < movieHistory.duration
+            ? movieHistory.progress
+            : null;
+    };
+
+    const lastProgress = getLastProgress();
+
+    const handleLoadedMetadata = () => {
+        if (videoRef.current && lastProgress) {
+            videoRef.current.currentTime = lastProgress;
+        }
+    };
+
+    useEffect(() => {
+        if (videoRef.current && lastProgress) {
+            videoRef.current.currentTime = lastProgress;
+        }
+    }, [lastProgress]);
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -307,6 +339,7 @@ export const MoviePlayer = ({
                 ref={videoRef}
                 src={src}
                 poster={poster}
+                onLoadedMetadata={handleLoadedMetadata}
                 className="w-full h-full object-cover rounded-2xl"
                 onClick={togglePlay}
             />
