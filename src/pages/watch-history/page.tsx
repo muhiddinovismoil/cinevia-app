@@ -19,7 +19,6 @@ export const WatchHistory = () => {
     const watchHistories: WatchHistoryResponseI[] = data?.data || [];
 
     const handleStatusChange = (newStatus: WatchStatus) => {
-        console.log(newStatus);
         setStatus(newStatus);
         setPage(1);
     };

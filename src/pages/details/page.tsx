@@ -32,8 +32,6 @@ export const MovieDetail = () => {
     });
     const movie: Movie = movieData?.data;
 
-    console.log(movie);
-
     const { data: recommendedData, isLoading: isRecommendedsFetching } =
         useFetchRecommendeds({
             categoryId: movie?.categoryId,
@@ -80,7 +78,7 @@ export const MovieDetail = () => {
                         <button
                             onClick={handleWatchNow}
                             disabled={!token}
-                            className={`mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg w-[200px] md:w-[285px] ${
+                            className={`cursor-pointer mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg w-[200px] md:w-[285px] ${
                                 token
                                     ? "bg-gray-800 text-white hover:bg-gray-700"
                                     : "bg-gray-600 text-gray-400 cursor-not-allowed"
