@@ -1,18 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { MainLayout } from "@/layout";
-import {
-    Home,
-    Movies,
-    Profile,
-    Series,
-    Cartoons,
-    SignUp,
-    SignIn,
-    OTP,
-    MovieDetail,
-    NotFound,
-    SearchPage,
-} from "@/pages";
+import * as pages from "@/pages";
 import { Guard } from "@/guards";
 
 function App() {
@@ -20,16 +8,19 @@ function App() {
         <>
             <Routes>
                 <Route path="/" element={<MainLayout />}>
-                    <Route index element={<Home />} />
-                    <Route path="/movies" element={<Movies />} />
-                    <Route path="/details/:id" element={<MovieDetail />} />
-                    <Route path="/series" element={<Series />} />
-                    <Route path="/cartoons" element={<Cartoons />} />
+                    <Route index element={<pages.Home />} />
+                    <Route path="/movies" element={<pages.Movies />} />
+                    <Route
+                        path="/details/:id"
+                        element={<pages.MovieDetail />}
+                    />
+                    <Route path="/series" element={<pages.Series />} />
+                    <Route path="/cartoons" element={<pages.Cartoons />} />
                     <Route
                         path="/profile"
                         element={
                             <Guard requireAuth redirectTo="/signin">
-                                <Profile />
+                                <pages.Profile />
                             </Guard>
                         }
                     />
@@ -37,7 +28,7 @@ function App() {
                         path="/favourites"
                         element={
                             <Guard requireAuth redirectTo="/signin">
-                                <></>
+                                <pages.Favourite />
                             </Guard>
                         }
                     />
@@ -45,17 +36,17 @@ function App() {
                         path="/watchhistories"
                         element={
                             <Guard requireAuth redirectTo="/signin">
-                                <></>
+                                <pages.WatchHistory />
                             </Guard>
                         }
                     />
-                    <Route element={<SearchPage />} path="/search" />
+                    <Route element={<pages.SearchPage />} path="/search" />
                 </Route>
                 <Route
                     path="/signup"
                     element={
                         <Guard requireAuth={false}>
-                            <SignUp />
+                            <pages.SignUp />
                         </Guard>
                     }
                 />
@@ -63,7 +54,7 @@ function App() {
                     path="/signin"
                     element={
                         <Guard requireAuth={false}>
-                            <SignIn />
+                            <pages.SignIn />
                         </Guard>
                     }
                 />
@@ -71,11 +62,11 @@ function App() {
                     path="/verification"
                     element={
                         <Guard requireAuth={false}>
-                            <OTP />
+                            <pages.OTP />
                         </Guard>
                     }
                 />
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<pages.NotFound />} />
             </Routes>
         </>
     );
