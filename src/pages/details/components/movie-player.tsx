@@ -23,6 +23,7 @@ export const MoviePlayer = ({
     episodeId,
     watchHistory,
 }: MoviePlayerProps) => {
+    console.log(watchHistory);
     const { mutate } = useUpsertWatchHistory();
     const getLastProgress = () => {
         if (!watchHistory.length) return null;

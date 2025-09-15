@@ -6,6 +6,7 @@ import {
     useRemoveFromFavourites,
 } from "../service/mutation";
 import { useState, useEffect } from "react";
+import { getUserIdFromToken } from "@/config";
 
 export const MovieCard = ({
     movie,
@@ -22,22 +23,32 @@ export const MovieCard = ({
     const { mutate: setFavourite } = useSetMovieFavourite();
     const { mutate: removeFavourite } = useRemoveFromFavourites();
 
-    const [isFavourite, setIsFavourite] = useState<boolean>(
-        movie?.favorites?.length > 0
-    );
+    const userId = getUserIdFromToken("token");
+    const [isFavourite, setIsFavourite] = useState<boolean>(false);
 
     useEffect(() => {
-        setIsFavourite(movie?.favorites?.length > 0);
-    }, [movie.favorites]);
+        if (userId && movie?.favorites) {
+            const alreadyFav = movie.favorites.some(
+                (fav: any) => fav.userId === userId
+            );
+            setIsFavourite(alreadyFav);
+        } else {
+            setIsFavourite(false);
+        }
+    }, [movie.favorites, userId]);
 
     const toggleFavourite = (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (!userId) return; // user yo‘q bo‘lsa hech narsa qilmaydi
+
         if (isFavourite) {
-            removeFavourite(movie.id);
-            setIsFavourite(false);
+            removeFavourite(movie.id, {
+                onSuccess: () => setIsFavourite(false),
+            });
         } else {
-            setFavourite(movie.id);
-            setIsFavourite(true);
+            setFavourite(movie.id, {
+                onSuccess: () => setIsFavourite(true),
+            });
         }
     };
 
@@ -54,9 +65,10 @@ export const MovieCard = ({
 
             <div
                 onClick={toggleFavourite}
-                className="absolute top-2 right-2 p-2 rounded-full 
+                className={`absolute top-2 right-2 p-2 rounded-full 
                    bg-black/50 backdrop-blur-md shadow-md
-                   hover:bg-black/70 transition-colors duration-200"
+                   hover:bg-black/70 transition-colors duration-200
+                   ${!userId ? "cursor-not-allowed opacity-50" : ""}`}
             >
                 <Star
                     className={`w-5 h-5 ${

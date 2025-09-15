@@ -37,7 +37,7 @@ export function getUserIdFromToken(key: string) {
         const cookieValue = Cookies.get(key);
         if (!cookieValue) return null;
         const payload: SignInResponseI = JSON.parse(cookieValue);
-        return payload.userId;
+        return payload.userId || null;
     } catch (e) {
         console.error("Invalid token", e);
         return null;

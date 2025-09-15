@@ -136,8 +136,11 @@ export const MovieDetail = () => {
                         {token && (
                             <button
                                 onClick={handleToggleFavorite}
+                                disabled={!userId}
                                 className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg w-[200px] md:w-[285px] transition ${
-                                    isFavorite
+                                    !userId
+                                        ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                                        : isFavorite
                                         ? "bg-red-600 text-white hover:bg-red-500"
                                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                                 }`}
@@ -234,7 +237,9 @@ export const MovieDetail = () => {
                                     movieId={movie.id}
                                     episodeId={activeEpisode?.id}
                                     movieType={movie.type as MovieTypes}
-                                    watchHistory={movie.watchHistory}
+                                    watchHistory={movie.watchHistory.filter(
+                                        (item) => item.userId == userId
+                                    )}
                                 />
                             ) : movie.source?.startsWith(
                                   "https://www.youtube.com"
@@ -247,7 +252,9 @@ export const MovieDetail = () => {
                                     imdbRating={movie.imdbRating}
                                     movieId={movie.id}
                                     movieType={movie.type as MovieTypes}
-                                    watchHistory={movie.watchHistory}
+                                    watchHistory={movie.watchHistory.filter(
+                                        (item) => item.userId == userId
+                                    )}
                                 />
                             )}
                         </>
