@@ -22,12 +22,10 @@ export const MovieCard = ({
     const { mutate: setFavourite } = useSetMovieFavourite();
     const { mutate: removeFavourite } = useRemoveFromFavourites();
 
-    // initial
     const [isFavourite, setIsFavourite] = useState<boolean>(
         movie?.favorites?.length > 0
     );
 
-    // props yangilansa sync bo‘lishi uchun
     useEffect(() => {
         setIsFavourite(movie?.favorites?.length > 0);
     }, [movie.favorites]);
@@ -54,7 +52,6 @@ export const MovieCard = ({
                 className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
-            {/* ⭐ Favourite Badge */}
             <div
                 onClick={toggleFavourite}
                 className="absolute top-2 right-2 p-2 rounded-full 
@@ -70,7 +67,6 @@ export const MovieCard = ({
                 />
             </div>
 
-            {/* Hover Info */}
             <div
                 className="absolute bottom-0 left-0 right-0 
                    bg-black/60 backdrop-blur-md 

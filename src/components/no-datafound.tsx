@@ -2,7 +2,7 @@ import { Film } from "lucide-react";
 import { motion } from "framer-motion";
 import type { MovieTypes } from "@/types";
 
-export const NotFound = ({ movieType }: { movieType: MovieTypes }) => {
+export const NotFound = ({ movieType }: { movieType: MovieTypes | string }) => {
     const capitalize = (str: string) =>
         str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     return (

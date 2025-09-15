@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { BlockLoader, MovieCard } from "@/pages/home/components";
 import { NotFound } from "@/components";
-import { MovieTypes } from "@/types";
 import { useFetchHistoryForSlide } from "../profile/service/query";
 import type { Movie } from "../home/types";
 import type { WatchHistoryResponseI } from "@/pages/profile/types";
@@ -86,7 +85,7 @@ export const WatchHistory = () => {
                     </div>
                 ) : (
                     <div className="col-span-full flex justify-center py-10">
-                        <NotFound movieType={MovieTypes.MOVIE} />
+                        <NotFound movieType={"Watched movies history"} />
                     </div>
                 )}
             </div>
