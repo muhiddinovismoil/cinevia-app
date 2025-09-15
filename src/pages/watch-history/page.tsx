@@ -4,20 +4,71 @@ import { NotFound } from "@/components";
 import { MovieTypes } from "@/types";
 import { useFetchHistoryForSlide } from "../profile/service/query";
 import type { Movie } from "../home/types";
-import type { WatchHistoryResponseI } from "../profile/types";
+import type { WatchHistoryResponseI } from "@/pages/profile/types";
+import { WatchStatus } from "@/pages/details/types";
 
 export const WatchHistory = () => {
     const [page, setPage] = useState(1);
+    const [status, setStatus] = useState<WatchStatus>(WatchStatus.WATCHING);
+
     const { data, isLoading } = useFetchHistoryForSlide({
         pageNumber: page,
         pageSize: 20,
+        status,
     });
+
     const watchHistories: WatchHistoryResponseI[] = data?.data || [];
+
+    const handleStatusChange = (newStatus: WatchStatus) => {
+        console.log(newStatus);
+        setStatus(newStatus);
+        setPage(1);
+    };
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="pt-24 text-2xl font-semibold text-center sm:text-left">
-                Watch History
+            <div className="pt-24 flex justify-between items-center max-w-md mx-auto text-lg font-semibold">
+                <button
+                    className={`relative pb-2 transition-colors duration-300 cursor-pointer ${
+                        status === WatchStatus.WATCHING
+                            ? "text-gray-300"
+                            : "text-gray-700 hover:text-gray-600"
+                    }`}
+                    onClick={() => handleStatusChange(WatchStatus.WATCHING)}
+                >
+                    Watching
+                    <span
+                        className={`absolute left-0 bottom-0 h-[2px] rounded-full transition-all duration-300
+        ${
+            status === WatchStatus.WATCHING
+                ? "w-full bg-blue-600"
+                : "w-0 bg-gray-200"
+        }
+        ${status !== WatchStatus.WATCHING ? "hover:w-full" : ""}
+      `}
+                    />
+                </button>
+
+                <button
+                    className={`relative pb-2 transition-colors duration-300 cursor-pointer ${
+                        status === WatchStatus.COMPLETED
+                            ? "text-gray-300"
+                            : "text-gray-700 hover:text-gray-600"
+                    }`}
+                    onClick={() => handleStatusChange(WatchStatus.COMPLETED)}
+                >
+                    Completed
+                    <span
+                        className={`absolute left-0 bottom-0 h-[2px] rounded-full transition-all duration-300
+        ${
+            status === WatchStatus.COMPLETED
+                ? "w-full bg-blue-600"
+                : "w-0 bg-gray-200"
+        }
+        ${status !== WatchStatus.COMPLETED ? "hover:w-full" : ""}
+      `}
+                    />
+                </button>
             </div>
 
             <div className="pt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
