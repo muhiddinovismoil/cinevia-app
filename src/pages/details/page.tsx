@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { MoviePlayer, TrailerPlayer } from "@/pages/details/components";
 import { BlockLoader, ContentsSlider } from "@/pages/home/components";
 import {
@@ -12,15 +12,22 @@ import {
     LucideArrowRight,
     Play,
     LogIn,
+    Heart,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
-import type { Movie } from "../home/types";
-import { useFetchMediaById, useFetchRecommendeds } from "./service/query";
 import Cookies from "js-cookie";
-import { SeasonsBlock } from "./components";
 import { getStreamSrc } from "@/service";
 import { MovieTypes, UploadTypes } from "@/types";
 import type { Episode } from "./types";
+import type { Movie } from "../home/types";
+import { SeasonsBlock } from "./components";
+import { useFetchMediaById, useFetchRecommendeds } from "./service/query";
+import {
+    useRemoveFromFavourites,
+    useSetMovieFavourite,
+} from "../home/service/mutation";
+import { NotFound } from "@/components";
+import { getUserIdFromToken } from "@/config";
 
 export const MovieDetail = () => {
     const params = useParams();
@@ -32,6 +39,42 @@ export const MovieDetail = () => {
     });
     const movie: Movie = movieData?.data;
 
+    const token = Cookies.get("token");
+    const userId = getUserIdFromToken("token");
+    console.log(userId);
+
+    const { mutate: setToFavorite } = useSetMovieFavourite();
+    const { mutate: removeFromFavorite } = useRemoveFromFavourites();
+
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    useEffect(() => {
+        if (movie && userId) {
+            const alreadyFav = movie.favorites?.some(
+                (fav: any) => fav.userId === userId
+            );
+            setIsFavorite(!!alreadyFav);
+        }
+    }, [movie, userId]);
+
+    const handleToggleFavorite = () => {
+        if (!movie || !token) return;
+
+        if (isFavorite) {
+            removeFromFavorite(movie.id, {
+                onSuccess: () => setIsFavorite(false),
+            });
+        } else {
+            setToFavorite(movie.id, {
+                onSuccess: () => setIsFavorite(true),
+            });
+        }
+    };
+
+    const handleWatchNow = () => {
+        playerRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
     const { data: recommendedData, isLoading: isRecommendedsFetching } =
         useFetchRecommendeds({
             categoryId: movie?.categoryId,
@@ -40,12 +83,6 @@ export const MovieDetail = () => {
             movieId: params.id as string,
         });
     const recommendeds = recommendedData?.data;
-
-    const token = Cookies.get("token");
-
-    const handleWatchNow = () => {
-        playerRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
 
     if (isMoiveFetching || isRecommendedsFetching) {
         return (
@@ -58,7 +95,7 @@ export const MovieDetail = () => {
     if (!movie) {
         return (
             <div className="flex justify-center items-center min-h-screen text-white">
-                <p>Movie not found</p>
+                <NotFound movieType={"Details"} />
             </div>
         );
     }
@@ -67,7 +104,7 @@ export const MovieDetail = () => {
         <div className="container">
             <div className="flex flex-col gap-[50px] py-[100px] text-white lg:gap-[100px]">
                 <div className="flex flex-col md:flex-row gap-[40px] lg:pb-[50px]">
-                    <div className="flex flex-col items-center md:items-start">
+                    <div className="flex flex-col items-center md:items-start gap-3">
                         <div className="w-[200px] md:w-[285px] border-2 border-white rounded-xl overflow-hidden">
                             <img
                                 src={movie.thumbnail}
@@ -78,7 +115,7 @@ export const MovieDetail = () => {
                         <button
                             onClick={handleWatchNow}
                             disabled={!token}
-                            className={`cursor-pointer mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg w-[200px] md:w-[285px] ${
+                            className={`cursor-pointer flex items-center justify-center gap-2 px-4 py-2 rounded-lg w-[200px] md:w-[285px] ${
                                 token
                                     ? "bg-gray-800 text-white hover:bg-gray-700"
                                     : "bg-gray-600 text-gray-400 cursor-not-allowed"
@@ -96,8 +133,28 @@ export const MovieDetail = () => {
                                 </>
                             )}
                         </button>
+                        {token && (
+                            <button
+                                onClick={handleToggleFavorite}
+                                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg w-[200px] md:w-[285px] transition ${
+                                    isFavorite
+                                        ? "bg-red-600 text-white hover:bg-red-500"
+                                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                                }`}
+                            >
+                                <Heart
+                                    className="w-4 h-4"
+                                    fill={isFavorite ? "currentColor" : "none"}
+                                    stroke="currentColor"
+                                />
+                                {isFavorite
+                                    ? "Remove from Favorites"
+                                    : "Add to Favorites"}
+                            </button>
+                        )}
                     </div>
 
+                    {/* movie details */}
                     <div className="flex flex-col justify-center mt-6 md:mt-0 max-w-3xl">
                         <h1 className="text-3xl md:text-4xl font-bold">
                             {movie.title}
@@ -144,6 +201,7 @@ export const MovieDetail = () => {
                     </div>
                 </div>
 
+                {/* Player */}
                 <div ref={playerRef} className="pt-[100px] lg:pb-[60px]">
                     {(movie.type === MovieTypes.SERIES ||
                         movie.type === MovieTypes.CARTOON_SERIES) &&

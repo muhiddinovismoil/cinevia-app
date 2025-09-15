@@ -15,11 +15,7 @@ export function loadCookieState(key: string): string | undefined {
     }
 }
 
-export function saveCookieState(
-    key: string,
-    state: unknown,
-    minutes = 60
-): void {
+export function saveCookieState<T>(key: string, state: T, minutes = 60): void {
     try {
         const serializedState = JSON.stringify(state);
         Cookies.set(key, serializedState, {
@@ -33,6 +29,18 @@ export function saveCookieState(
         } else {
             console.error(`Unknown error saving cookie "${key}":`, e);
         }
+    }
+}
+
+export function getUserIdFromToken(key: string) {
+    try {
+        const cookieValue = Cookies.get(key);
+        if (!cookieValue) return null;
+        const payload: SignInResponseI = JSON.parse(cookieValue);
+        return payload.userId;
+    } catch (e) {
+        console.error("Invalid token", e);
+        return null;
     }
 }
 

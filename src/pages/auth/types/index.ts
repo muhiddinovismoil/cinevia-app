@@ -11,6 +11,7 @@ export interface SignInResponseI {
     accessToken: string;
     refreshToken: string;
     role?: RoleEnum;
+    userId: string;
 }
 
 export interface SignUpPayloadI {
