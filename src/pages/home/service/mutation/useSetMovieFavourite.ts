@@ -1,4 +1,4 @@
-import { requestWithToken } from "@/config";
+import { getAccessToken, request } from "@/config";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -6,11 +6,20 @@ import { useNavigate } from "react-router-dom";
 export const useSetMovieFavourite = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const { accessToken } = getAccessToken();
     return useMutation({
         mutationFn: async (movieId: string) => {
-            const response = await requestWithToken.post("/favourite", {
-                movieId: movieId,
-            });
+            const response = await request.post(
+                "/favourite",
+                {
+                    movieId: movieId,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
             return response.data;
         },
         onSuccess: () => {
