@@ -1,4 +1,4 @@
-import { requestWithToken } from "@/config";
+import { getAccessToken, getUserIdFromToken, request } from "@/config";
 import { useQuery } from "@tanstack/react-query";
 
 export const useFetchFavourites = ({
@@ -8,11 +8,18 @@ export const useFetchFavourites = ({
     pageNumber: number;
     pageSize: number;
 }) => {
+    const userId = getUserIdFromToken("token");
+    const { accessToken } = getAccessToken();
     return useQuery({
-        queryKey: ["favourites", pageNumber, pageSize],
+        queryKey: ["favourites", userId, pageNumber, pageSize],
         queryFn: async () => {
-            const response = await requestWithToken.get("/favourite");
+            const response = await request.get("/favourite", {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
             return response.data;
         },
+        enabled: !!userId,
+        staleTime: 0,
+        gcTime: 0,
     });
 };
