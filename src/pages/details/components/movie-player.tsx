@@ -126,7 +126,6 @@ export const MoviePlayer = ({
         const handleKeyDown = (e: KeyboardEvent) => {
             if (!videoRef.current) return;
 
-            // 👇 filter — agar user yozayotgan bo‘lsa shortcut ishlamasin
             const target = e.target as HTMLElement;
             const isTyping =
                 target.tagName === "INPUT" ||

@@ -5,6 +5,18 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    react: ["react", "react-dom"],
+                    motion: ["framer-motion"],
+                    swiper: ["swiper"],
+                    query: ["@tanstack/react-query"],
+                },
+            },
+        },
+    },
     server: {
         host: "app1.localhost",
         port: 5173,

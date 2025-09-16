@@ -42,16 +42,13 @@
     animation: searchOpen 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* Scrollni arrow-larsiz va juda ingichka qilish */
-/* Scrollbar ni to‘liq maxsus qilish */
 .dropdown-scroll {
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #4b5563 transparent; /* Firefox thumb va track rangi */
-    -ms-overflow-style: none; /* IE 10+ */
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 transparent;
+    -ms-overflow-style: none;
     overflow: auto;
 }
 
-/* Chrome, Edge, Safari */
 .dropdown-scroll::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -67,12 +64,10 @@
     border: none;
 }
 
-/* Arrow-larni olib tashlash o‘rniga: scroll track va thumb-ni custom qilish */
 .dropdown-scroll::-webkit-scrollbar-button {
-    display: none; /* eski Chrome/Edge uchun */
+    display: none;
 }
 
-/* Arrow-larni hech qachon ko‘rsatmaslik: Chrome/Edge uchun */
 .dropdown-scroll::-webkit-scrollbar-thumb:vertical,
 .dropdown-scroll::-webkit-scrollbar-thumb:horizontal {
     background-clip: padding-box;

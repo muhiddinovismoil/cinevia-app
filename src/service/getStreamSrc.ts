@@ -1,7 +1,7 @@
 import { UploadTypes } from "@/types";
 
 export const getStreamSrc = (src: string | undefined, uploadType: string) => {
-    if (!src) return ""; // agar undefined bo‘lsa, bo‘sh string qaytar
+    if (!src) return "";
     if (uploadType === UploadTypes.LOCAL) {
         const filename = src.split("/uploads/")[1];
         return `${

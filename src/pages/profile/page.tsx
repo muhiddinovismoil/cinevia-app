@@ -9,12 +9,14 @@ import {
 } from "./components";
 import { useNavigate } from "react-router-dom";
 import { BlockLoader, ContentsSlider } from "../home/components";
+import { WatchStatus } from "../details/types";
 
 export const Profile = () => {
     const { data } = useFetchProfile();
     const { data: watchHistoryResponse, isLoading } = useFetchHistoryForSlide({
         pageNumber: 1,
         pageSize: 20,
+        status: WatchStatus.WATCHING,
     });
     const watchHistory: WatchHistoryResponseI[] =
         watchHistoryResponse?.data ?? [];

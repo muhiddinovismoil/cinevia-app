@@ -14,7 +14,6 @@ export const SeasonsBlock = ({
 
     return (
         <div className="flex flex-col gap-6">
-            {/* Seasons buttons */}
             <div className="flex gap-3 flex-wrap">
                 {seasons.map((season) => (
                     <button
@@ -34,7 +33,6 @@ export const SeasonsBlock = ({
                 ))}
             </div>
 
-            {/* Episodes dropdown */}
             {activeSeason && (
                 <div className="max-w-sm relative">
                     <select

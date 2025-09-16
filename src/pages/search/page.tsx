@@ -5,7 +5,7 @@ import { Search, X } from "lucide-react";
 import { useDebouncedValue } from "@/hook";
 import type { FormValues } from "./types";
 import { useFetchMovies } from "@/service";
-import { SearchedMoviesSlider } from "./components/slider";
+import { SearchedMoviesSlider } from "./components";
 import { BlockLoader } from "../home/components";
 
 export const SearchPage = () => {
