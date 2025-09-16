@@ -1,5 +1,10 @@
 import { useRef, useState, useEffect } from "react";
-import { MoviePlayer, TrailerPlayer } from "@/pages/details/components";
+import {
+    MoviePlayer,
+    RatingSection,
+    TrailerPlayer,
+    SeasonsBlock,
+} from "./components";
 import { BlockLoader, ContentsSlider } from "@/pages/home/components";
 import {
     Clock,
@@ -18,16 +23,15 @@ import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { getStreamSrc } from "@/service";
 import { MovieTypes, UploadTypes } from "@/types";
+import { NotFound } from "@/components";
+import { getUserIdFromToken } from "@/config";
 import type { Episode } from "./types";
 import type { Movie } from "../home/types";
-import { SeasonsBlock } from "./components";
 import { useFetchMediaById, useFetchRecommendeds } from "./service/query";
 import {
     useRemoveFromFavourites,
     useSetMovieFavourite,
 } from "../home/service/mutation";
-import { NotFound } from "@/components";
-import { getUserIdFromToken } from "@/config";
 
 export const MovieDetail = () => {
     const params = useParams();
@@ -41,7 +45,6 @@ export const MovieDetail = () => {
 
     const token = Cookies.get("token");
     const userId = getUserIdFromToken("token");
-    console.log(userId);
 
     const { mutate: setToFavorite } = useSetMovieFavourite();
     const { mutate: removeFromFavorite } = useRemoveFromFavourites();
@@ -157,7 +160,6 @@ export const MovieDetail = () => {
                         )}
                     </div>
 
-                    {/* movie details */}
                     <div className="flex flex-col justify-center mt-6 md:mt-0 max-w-3xl">
                         <h1 className="text-3xl md:text-4xl font-bold">
                             {movie.title}
@@ -204,7 +206,6 @@ export const MovieDetail = () => {
                     </div>
                 </div>
 
-                {/* Player */}
                 <div ref={playerRef} className="pt-[100px] lg:pb-[60px]">
                     {(movie.type === MovieTypes.SERIES ||
                         movie.type === MovieTypes.CARTOON_SERIES) &&
@@ -273,6 +274,10 @@ export const MovieDetail = () => {
                             </button>
                         </div>
                     )}
+                </div>
+
+                <div className="">
+                    <RatingSection movieId={params.id as string} />
                 </div>
 
                 <div className="flex flex-col gap-[25px] sm:gap-[35px] lg:gap-[50px] lg:pt-[50px]">

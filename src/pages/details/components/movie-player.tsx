@@ -23,7 +23,6 @@ export const MoviePlayer = ({
     episodeId,
     watchHistory,
 }: MoviePlayerProps) => {
-    console.log(watchHistory);
     const { mutate } = useUpsertWatchHistory();
     const getLastProgress = () => {
         if (!watchHistory.length) return null;
@@ -126,6 +125,15 @@ export const MoviePlayer = ({
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (!videoRef.current) return;
+
+            // 👇 filter — agar user yozayotgan bo‘lsa shortcut ishlamasin
+            const target = e.target as HTMLElement;
+            const isTyping =
+                target.tagName === "INPUT" ||
+                target.tagName === "TEXTAREA" ||
+                target.getAttribute("contenteditable") === "true";
+
+            if (isTyping) return;
 
             switch (e.key) {
                 case " ":

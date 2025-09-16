@@ -33,3 +33,15 @@ export enum WatchStatus {
     WATCHING = "WATCHING",
     COMPLETED = "COMPLETED",
 }
+export interface RemoveRatingMutationPropsI {
+    id: string;
+    payload: RemoveRatingPayloadI;
+}
+interface RemoveRatingPayloadI {
+    movieId: string;
+}
+
+export type FormValues = {
+    rating: number;
+    review: string;
+};
